@@ -8,7 +8,7 @@ package com.mycompany.carrerahilos;
  *
  * @author lucas
  */
-public class CarreraHilos {
+public class Main {
 
     public static void main(String[] args) {
         //Lloramos fuerte?
