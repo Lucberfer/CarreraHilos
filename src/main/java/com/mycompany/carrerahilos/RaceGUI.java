@@ -11,30 +11,30 @@ import static java.lang.Thread.sleep;
 /**
  * @author lucas
  */
+
 public class RaceGUI extends JFrame {
+    private JTextField distanceField; // Input field for race distance
+    private List<JProgressBar> progressBars; // Progress bars for cars
+    private Race race; // Race logic object
+    private final int MAX_DISTANCE = 1000; // Maximum distance for progress bars
 
-    private JTextField distanceField;
-    private List<JLabel> carLabels;
-    private Race race;
-    private final int TRACK_WIDTH = 800;
-
+    // Constructor
     public RaceGUI() {
-
         super("Car Race");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(900, 400);
+        setSize(800, 400); // Adjusted window size
         setLayout(new BorderLayout());
         initializeComponents();
     }
 
+    // Initialize GUI components
     private void initializeComponents() {
-
         setupTopPanel();
         setupRaceTrack();
     }
 
+    // Setup the top panel with input and start button
     private void setupTopPanel() {
-
         JPanel topPanel = new JPanel();
         topPanel.add(new JLabel("Race Distance:"));
         distanceField = new JTextField(5);
@@ -47,39 +47,50 @@ public class RaceGUI extends JFrame {
         add(topPanel, BorderLayout.NORTH);
     }
 
+    // Setup the race track panel
     private void setupRaceTrack() {
-
         JPanel racePanel = new JPanel();
-        racePanel.setLayout(null);
-        racePanel.setPreferredSize(new Dimension(TRACK_WIDTH, 300));
+        racePanel.setLayout(new GridLayout(4, 1, 10, 10));
+        racePanel.setPreferredSize(new Dimension(800, 300)); // Adjusted panel size
         add(racePanel, BorderLayout.CENTER);
 
-        carLabels = new ArrayList<>();
-
+        progressBars = new ArrayList<>();
         for (int i = 0; i < 4; i++) {
-            JLabel carLabel = new JLabel(new ImageIcon(getClass().getClassLoader().getResource("car" + (i + 1) + ".png")));
-            carLabel.setBounds(0, i * 70 + 20, 50, 50);
-            carLabels.add(carLabel);
-            racePanel.add(carLabel);
+            JProgressBar progressBar = new JProgressBar(0, MAX_DISTANCE);
+            progressBar.setStringPainted(true);
+            progressBars.add(progressBar);
+            racePanel.add(progressBar);
         }
     }
 
+    // Start the race
     private void startRace() {
-
         int raceDistance;
         try {
             raceDistance = Integer.parseInt(distanceField.getText());
+            if (raceDistance > MAX_DISTANCE || raceDistance <= 0) {
+                JOptionPane.showMessageDialog(this, "Enter a valid distance (1-" + MAX_DISTANCE + ")");
+                return;
+            }
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "Please enter a valid race distance.");
             return;
         }
 
+        // Create a new race instance
         race = new Race(raceDistance);
+
+        // Reset progress bars
+        for (JProgressBar progressBar : progressBars) {
+            progressBar.setValue(0);
+        }
+
+        // Start the race in a new thread
         new Thread(this::runRace).start();
     }
 
+    // Run the race logic
     private void runRace() {
-
         long startTime = System.currentTimeMillis();
 
         while (!race.isRaceOver()) {
@@ -87,36 +98,44 @@ public class RaceGUI extends JFrame {
                 for (int i = 0; i < race.getCars().size(); i++) {
                     Car car = race.getCars().get(i);
                     car.advance();
-                    int xPosition = Math.min(car.getDistanceCovered() * TRACK_WIDTH / race.getCars().size(), TRACK_WIDTH - 50);
-                    carLabels.get(i).setLocation(xPosition, carLabels.get(i).getY());
+                    int progress = Math.min(car.getDistanceCovered() * MAX_DISTANCE / race.getRaceDistance(), MAX_DISTANCE);
+                    progressBars.get(i).setValue(progress);
 
-                    if (car.getDistanceCovered() >= race.getCars().size() * 100) {
+                    if (car.getDistanceCovered() >= race.getRaceDistance()) {
                         race.recordTime(car, System.currentTimeMillis() - startTime);
                     }
                 }
             }
 
-            sleep(200);
+            sleep(500); // Slower updates for smoother animation
         }
 
         showResults();
     }
 
+    // Show results (winner and distances)
     private void showResults() {
-
         Map<Car, Long> raceTimes = race.getRaceTimes();
-
         StringBuilder results = new StringBuilder("Race Results:\n");
-        raceTimes.forEach((car, time) -> results.append(car.getName())
-                .append(" finished in ")
-                .append(time / 1000.0)
-                .append(" seconds\n"));
+
+        for (int i = 0; i < race.getCars().size(); i++) {
+            Car car = race.getCars().get(i);
+            results.append(car.getName())
+                    .append(" - Distance: ").append(car.getDistanceCovered()).append("m")
+                    .append(" - Time: ").append(raceTimes.getOrDefault(car, 0L) / 1000.0).append("s")
+                    .append("\n");
+        }
+
+        Car winner = race.getWinner();
+        if (winner != null) {
+            results.append("\nWinner: ").append(winner.getName());
+        }
 
         JOptionPane.showMessageDialog(this, results.toString());
     }
 
+    // Pause for a given duration
     private void sleep(int milliseconds) {
-
         try {
             Thread.sleep(milliseconds);
         } catch (InterruptedException e) {

@@ -5,8 +5,8 @@ import javax.swing.*;
 /**
  * @author lucas
  */
-public class Main {
 
+public class Main {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             RaceGUI raceGUI = new RaceGUI();

@@ -11,50 +11,42 @@ public class Race {
     private List<Car> cars;
     private Map<Car, Long> raceTimes;
 
-    public  Race(int raceDistance) {
+    public Race(int raceDistance) {
         this.raceDistance = raceDistance;
         this.cars = new ArrayList<>();
         this.raceTimes = new HashMap<>();
         initializeCars();
     }
 
-    public void initializeCars(){
-
-        cars.add(new Car("Michi 1", (int) (Math.random() * 10 + 1)));
-        cars.add(new Car("Michi 2", (int) (Math.random() * 10 + 1)));
-        cars.add(new Car("Michi 3", (int) (Math.random() * 10 + 1)));
-        cars.add(new Car("Michi 4", (int) (Math.random() * 10 + 1)));
+    private void initializeCars() {
+        for (int i = 1; i <= 4; i++) {
+            cars.add(new Car("Car " + i, (int) (Math.random() * 10 + 5))); // Speed between 5 and 15
+        }
     }
-    public List<Car> getCars() {
 
+    public List<Car> getCars() {
         return cars;
     }
 
     public boolean isRaceOver() {
-
         return cars.stream().anyMatch(car -> car.getDistanceCovered() >= raceDistance);
     }
 
     public Car getWinner() {
-
         return cars.stream().filter(car -> car.getDistanceCovered() >= raceDistance).findFirst().orElse(null);
     }
 
     public synchronized void recordTime(Car car, long time) {
-        if(!raceTimes.containsKey(car)) {
+        if (!raceTimes.containsKey(car)) {
             raceTimes.put(car, time);
         }
     }
 
     public Map<Car, Long> getRaceTimes() {
-
         return raceTimes;
     }
 
-    public void resetRace() {
-
-        cars.forEach(Car::reset);
-        raceTimes.clear();
+    public int getRaceDistance() {
+        return raceDistance;
     }
 }
-
