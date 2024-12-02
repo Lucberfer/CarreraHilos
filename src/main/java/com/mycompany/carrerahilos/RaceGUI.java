@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -55,7 +56,7 @@ public class RaceGUI extends JFrame {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                java.net.URL resource = getClass().getClassLoader().getResource("BGround.png");
+                URL resource = getClass().getClassLoader().getResource("BGround2.png");
                 if (resource != null) {
                     ImageIcon background = new ImageIcon(resource);
                     g.drawImage(background.getImage(), 0, 0, getWidth(), getHeight(), this);
@@ -66,6 +67,7 @@ public class RaceGUI extends JFrame {
         racePanel.setLayout(null); // Allow absolute positioning
         racePanel.setPreferredSize(new Dimension(1100, 400)); // Adjusted panel size
         add(racePanel, BorderLayout.CENTER);
+
 
         progressBars = new ArrayList<>();
         carLabels = new ArrayList<>();
@@ -143,7 +145,7 @@ public class RaceGUI extends JFrame {
                 }
             }
 
-            sleep(100); // Slower updates for smoother animation
+            sleep(150); // Slower updates for smoother animation
         }
 
         showResults();
@@ -151,24 +153,61 @@ public class RaceGUI extends JFrame {
 
     // Show results (winner and distances)
     private void showResults() {
-        Map<Car, Long> raceTimes = race.getRaceTimes();
-        StringBuilder results = new StringBuilder("Resultados furiosos:\n");
+        // Renombrar los carros dinámicamente
+        List<String> customNames = Arrays.asList("Shrek", "McMenú", "Tofu", "Oreo");
+        for (int i = 0; i < race.getCars().size(); i++) {
+            Car car = race.getCars().get(i);
+            car.setName(customNames.get(i)); // Renombrar cada carro usando una lista predefinida
+        }
+
+        // Crear datos para la tabla
+        String[] columnNames = {"Car", "Distancia (m)"};
+        Object[][] data = new Object[race.getCars().size()][2];
 
         for (int i = 0; i < race.getCars().size(); i++) {
             Car car = race.getCars().get(i);
-            results.append(car.getName())
-                    .append(" - Distance: ").append(car.getDistanceCovered()).append("m")
-                    .append(" - Time: ").append(raceTimes.getOrDefault(car, 0L) / 1000.0).append("s")
-                    .append("\n");
+
+            data[i][0] = car.getName();
+            data[i][1] = car.getDistanceCovered();
         }
 
+        // Crear tabla
+        JTable table = new JTable(data, columnNames);
+        table.setFont(new Font("Arial", Font.PLAIN, 14));
+        table.setRowHeight(30);
+        table.getTableHeader().setFont(new Font("Arial", Font.BOLD, 16));
+        table.getTableHeader().setBackground(Color.LIGHT_GRAY);
+        table.getTableHeader().setForeground(Color.BLACK);
+
+        // Agregar la tabla a un JScrollPane
+        JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane.setPreferredSize(new Dimension(400, 250));
+
+        // Crear el mensaje para el ganador
         Car winner = race.getWinner();
-        if (winner != null) {
-            results.append("\nGanador: ").append(winner.getName());
-        }
+        String winnerMessage = winner != null
+                ? "Ganador: " + winner.getName() + " - Distancia: " + winner.getDistanceCovered() + "m"
+                : "No hay ganador.";
 
-        JOptionPane.showMessageDialog(this, results.toString());
+        JLabel winnerLabel = new JLabel(winnerMessage);
+        winnerLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        winnerLabel.setForeground(Color.RED);
+
+        // Crear panel principal
+        JPanel panel = new JPanel();
+        panel.setLayout(new BorderLayout(10, 10));
+        panel.add(scrollPane, BorderLayout.CENTER);
+        panel.add(winnerLabel, BorderLayout.SOUTH);
+
+        // Mostrar el JDialog
+        JOptionPane.showMessageDialog(this, panel, "Resultados de la Carrera", JOptionPane.INFORMATION_MESSAGE);
     }
+
+
+
+
+
+
 
     // Pause for a given duration
     private void sleep(int milliseconds) {

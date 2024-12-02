@@ -18,6 +18,10 @@ public class Car {
         this.speed = speed;
         this.distanceCovered = 0;
     }
+    // Set the names
+    public void setName(String name) {
+        this.name = name;
+    }
 
     // Gets the name of the car.
     public String getName() {
