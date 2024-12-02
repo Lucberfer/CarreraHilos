@@ -50,34 +50,46 @@ public class RaceGUI extends JFrame {
 
     // Setup the race track panel
     private void setupRaceTrack() {
-        JPanel racePanel = new JPanel();
+        JPanel racePanel = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                java.net.URL resource = getClass().getClassLoader().getResource("living_room_background.png");
+                if (resource != null) {
+                    ImageIcon background = new ImageIcon(resource);
+                    g.drawImage(background.getImage(), 0, 0, getWidth(), getHeight(), this);
+                }
+            }
+        };
+
         racePanel.setLayout(null); // Allow absolute positioning
         racePanel.setPreferredSize(new Dimension(1100, 400)); // Adjusted panel size
         add(racePanel, BorderLayout.CENTER);
 
         progressBars = new ArrayList<>();
         carLabels = new ArrayList<>();
+
         for (int i = 0; i < 4; i++) {
             // Create and add progress bars
             JProgressBar progressBar = new JProgressBar(0, MAX_DISTANCE);
             progressBar.setStringPainted(true);
-            progressBar.setBounds(100, i * 100 + 20, 800, 30);
+            progressBar.setBounds(100, i * 100 + 70, 800, 30);
             progressBars.add(progressBar);
             racePanel.add(progressBar);
 
             // Create and add car images
-            java.net.URL resource = getClass().getClassLoader().getResource("car" + (i + 1) + ".png");
-            if (resource == null) {
+            java.net.URL carResource = getClass().getClassLoader().getResource("car" + (i + 1) + ".png");
+            if (carResource == null) {
                 throw new IllegalArgumentException("Image not found: car" + (i + 1) + ".png");
             }
-            ImageIcon originalIcon = new ImageIcon(resource);
-            Image scaledImage = originalIcon.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH); // Resize to 80x80
-            JLabel carLabel = new JLabel(new ImageIcon(scaledImage));
-            carLabel.setBounds(20, i * 100 + 10, 80, 80); // Initial position
+            ImageIcon carIcon = new ImageIcon(new ImageIcon(carResource).getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH));
+            JLabel carLabel = new JLabel(carIcon);
+            carLabel.setBounds(20, i * 100 + 50, 80, 80); // Position above the progress bar
             carLabels.add(carLabel);
             racePanel.add(carLabel);
         }
     }
+
 
     // Start the race
     private void startRace() {
