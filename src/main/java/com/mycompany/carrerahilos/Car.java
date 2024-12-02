@@ -12,7 +12,7 @@ public class Car {
     // Constructs a Car object with the given name and speed.
     public Car(String name, int speed) {
         if (speed < 0) {
-            throw new IllegalArgumentException("Speed cannot be negative.");
+            throw new IllegalArgumentException("La velocidad no puede ser negativa.");
         }
         this.name = name;
         this.speed = speed;

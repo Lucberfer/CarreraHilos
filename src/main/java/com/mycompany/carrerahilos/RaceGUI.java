@@ -2,6 +2,7 @@ package com.mycompany.carrerahilos;
 
 import javax.swing.*;
 import java.awt.*;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -21,9 +22,9 @@ public class RaceGUI extends JFrame {
 
     // Constructor
     public RaceGUI() {
-        super("Car Race");
+        super("Michis Rápidos y furiosos");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(1200, 600); // Adjusted window size
+        setSize(1200, 800); // Adjusted window size
         setLayout(new BorderLayout());
         initializeComponents();
     }
@@ -37,11 +38,11 @@ public class RaceGUI extends JFrame {
     // Setup the top panel with input and start button
     private void setupTopPanel() {
         JPanel topPanel = new JPanel();
-        topPanel.add(new JLabel("Race Distance:"));
+        topPanel.add(new JLabel("Distancia:"));
         distanceField = new JTextField(5);
         topPanel.add(distanceField);
 
-        JButton startButton = new JButton("Start Race");
+        JButton startButton = new JButton("Empezar");
         startButton.addActionListener(e -> startRace());
         topPanel.add(startButton);
 
@@ -54,7 +55,7 @@ public class RaceGUI extends JFrame {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                java.net.URL resource = getClass().getClassLoader().getResource("living_room_background.png");
+                java.net.URL resource = getClass().getClassLoader().getResource("BGround.png");
                 if (resource != null) {
                     ImageIcon background = new ImageIcon(resource);
                     g.drawImage(background.getImage(), 0, 0, getWidth(), getHeight(), this);
@@ -80,7 +81,7 @@ public class RaceGUI extends JFrame {
             // Create and add car images
             java.net.URL carResource = getClass().getClassLoader().getResource("car" + (i + 1) + ".png");
             if (carResource == null) {
-                throw new IllegalArgumentException("Image not found: car" + (i + 1) + ".png");
+                throw new IllegalArgumentException("Imagen no encontrada: car" + (i + 1) + ".png");
             }
             ImageIcon carIcon = new ImageIcon(new ImageIcon(carResource).getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH));
             JLabel carLabel = new JLabel(carIcon);
@@ -97,11 +98,11 @@ public class RaceGUI extends JFrame {
         try {
             raceDistance = Integer.parseInt(distanceField.getText());
             if (raceDistance > MAX_DISTANCE || raceDistance <= 0) {
-                JOptionPane.showMessageDialog(this, "Enter a valid distance (1-" + MAX_DISTANCE + ")");
+                JOptionPane.showMessageDialog(this, "Introduzca una distancia válida (1-" + MAX_DISTANCE + ")");
                 return;
             }
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Please enter a valid race distance.");
+            JOptionPane.showMessageDialog(this, "Por favor introduzca una distancia válida.");
             return;
         }
 
@@ -142,7 +143,7 @@ public class RaceGUI extends JFrame {
                 }
             }
 
-            sleep(500); // Slower updates for smoother animation
+            sleep(100); // Slower updates for smoother animation
         }
 
         showResults();
@@ -151,7 +152,7 @@ public class RaceGUI extends JFrame {
     // Show results (winner and distances)
     private void showResults() {
         Map<Car, Long> raceTimes = race.getRaceTimes();
-        StringBuilder results = new StringBuilder("Race Results:\n");
+        StringBuilder results = new StringBuilder("Resultados furiosos:\n");
 
         for (int i = 0; i < race.getCars().size(); i++) {
             Car car = race.getCars().get(i);
@@ -163,7 +164,7 @@ public class RaceGUI extends JFrame {
 
         Car winner = race.getWinner();
         if (winner != null) {
-            results.append("\nWinner: ").append(winner.getName());
+            results.append("\nGanador: ").append(winner.getName());
         }
 
         JOptionPane.showMessageDialog(this, results.toString());

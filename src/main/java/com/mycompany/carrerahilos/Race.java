@@ -14,7 +14,7 @@ public class Race {
     // Constructs a Race object with the specified race distance.
     public Race(int raceDistance) {
         if (raceDistance <= 0) {
-            throw new IllegalArgumentException("Race distance must be greater than zero.");
+            throw new IllegalArgumentException("La distancia introducida debe ser mayor a 0.");
         }
         this.raceDistance = raceDistance;
         this.cars = new ArrayList<>();
