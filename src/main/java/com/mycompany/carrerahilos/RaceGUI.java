@@ -27,6 +27,7 @@ public class RaceGUI extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1200, 800); // Adjusted window size
         setLayout(new BorderLayout());
+        setLocationRelativeTo(null);
         initializeComponents();
     }
 
@@ -163,7 +164,7 @@ public class RaceGUI extends JFrame {
         }
 
         // Crear datos para la tabla
-        String[] columnNames = {"Car", "Distancia (m)"};
+        String[] columnNames = {"Michis Furiosos", "Distancia (m)"};
         Object[][] data = new Object[race.getCars().size()][2];
 
         for (int i = 0; i < race.getCars().size(); i++) {
