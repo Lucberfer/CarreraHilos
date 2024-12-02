@@ -23,7 +23,7 @@ public class RaceGUI extends JFrame {
 
     // Constructor
     public RaceGUI() {
-        super("Michis Rápidos y furiosos");
+        super("Michis Rápidos y Furiosos");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1200, 800); // Adjusted window size
         setLayout(new BorderLayout());
@@ -68,7 +68,6 @@ public class RaceGUI extends JFrame {
         racePanel.setPreferredSize(new Dimension(1100, 400)); // Adjusted panel size
         add(racePanel, BorderLayout.CENTER);
 
-
         progressBars = new ArrayList<>();
         carLabels = new ArrayList<>();
 
@@ -76,12 +75,16 @@ public class RaceGUI extends JFrame {
             // Create and add progress bars
             JProgressBar progressBar = new JProgressBar(0, MAX_DISTANCE);
             progressBar.setStringPainted(true);
+            progressBar.setForeground(new Color(255, 255, 255, 200)); // White with transparency
+            progressBar.setBackground(new Color(255, 255, 255, 50)); // Light white transparency
+            progressBar.setOpaque(false); // Make the progress bar transparent
+            progressBar.setBorder(null); // Remove the border
             progressBar.setBounds(100, i * 100 + 70, 800, 30);
             progressBars.add(progressBar);
             racePanel.add(progressBar);
 
             // Create and add car images
-            java.net.URL carResource = getClass().getClassLoader().getResource("car" + (i + 1) + ".png");
+            URL carResource = getClass().getClassLoader().getResource("car" + (i + 1) + ".png");
             if (carResource == null) {
                 throw new IllegalArgumentException("Imagen no encontrada: car" + (i + 1) + ".png");
             }
@@ -92,7 +95,6 @@ public class RaceGUI extends JFrame {
             racePanel.add(carLabel);
         }
     }
-
 
     // Start the race
     private void startRace() {
@@ -191,7 +193,7 @@ public class RaceGUI extends JFrame {
 
         JLabel winnerLabel = new JLabel(winnerMessage);
         winnerLabel.setFont(new Font("Arial", Font.BOLD, 18));
-        winnerLabel.setForeground(Color.RED);
+        winnerLabel.setForeground(Color.GRAY);
 
         // Crear panel principal
         JPanel panel = new JPanel();
@@ -202,12 +204,6 @@ public class RaceGUI extends JFrame {
         // Mostrar el JDialog
         JOptionPane.showMessageDialog(this, panel, "Resultados de la Carrera", JOptionPane.INFORMATION_MESSAGE);
     }
-
-
-
-
-
-
 
     // Pause for a given duration
     private void sleep(int milliseconds) {
